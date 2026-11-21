@@ -5,7 +5,8 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "yandex-wordstat-mcp": "dist/index.js"
+    "yandex-wordstat-mcp": "dist/index.js",
+    "yandex-webmaster-mcp": "dist/webmaster-index.js"
   },
   "files": [
     "dist"
@@ -13,7 +14,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "start:webmaster": "node dist/webmaster-index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

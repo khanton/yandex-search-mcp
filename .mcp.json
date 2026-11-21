@@ -7,6 +7,15 @@
           "YANDEX_FOLDER_ID": "...",
           "YANDEX_API_TOKEN": "..."
         }
+      },
+      "yandex-webmaster": {
+        "command": "node",
+        "args": ["dist/webmaster-index.js"],
+        "env": {
+          "YANDEX_WEBMASTER_TOKEN": "...",
+          "YANDEX_FOLDER_ID": "...",
+          "YANDEX_API_TOKEN": "..."
+        }
       }
     }
 }

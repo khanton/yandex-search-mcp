@@ -11,6 +11,52 @@ MCP сервер для доступа к Yandex Wordstat через [Yandex Sea
 | `wordstat_get_regions_distribution` | Распределение по регионам |
 | `wordstat_get_region_tree` | Список регионов с ID |
 
+## Yandex Webmaster MCP
+
+MCP-сервер для API Яндекс Вебмастера и Wordstat. Wordstat API доступен в этом же сервере; отдельный `yandex-wordstat` MCP при этом можно не подключать. Доступные инструменты Webmaster:
+
+- `yandex_webmaster_list_sites` — сайты пользователя;
+- `yandex_webmaster_site_summary` — сводка индексирования и ИКС;
+- `yandex_webmaster_site_diagnostics` — диагностика сайта;
+- `yandex_webmaster_popular_queries` — популярные запросы (до 500 за вызов).
+
+В этом же сервере доступны инструменты Wordstat: `wordstat_get_top`, `wordstat_get_dynamics`, `wordstat_get_regions_distribution` и `wordstat_get_region_tree`. Для них дополнительно настройте `YANDEX_FOLDER_ID` и один из токенов `YANDEX_IAM_TOKEN` / `YANDEX_API_TOKEN` (подробности — в разделе переменных окружения ниже).
+
+### Как получить `YANDEX_WEBMASTER_TOKEN`
+
+1. Войдите в аккаунт Яндекса, у которого есть доступ к нужным сайтам в Вебмастере.
+2. Откройте [создание приложения в Яндекс OAuth](https://oauth.yandex.ru/client/new).
+3. Задайте любое название, в разделе платформ выберите **Веб-сервисы**, а в поле **Redirect URI** укажите `https://oauth.yandex.ru/verification_code`.
+4. В разделе доступа к данным добавьте разрешения **webmaster:hostinfo** и **webmaster:verify**, затем создайте приложение.
+5. Скопируйте **ClientID** приложения и откройте в браузере ссылку, подставив его вместо `<CLIENT_ID>`:
+
+   ```text
+   https://oauth.yandex.ru/authorize?response_type=token&client_id=<CLIENT_ID>
+   ```
+
+6. Подтвердите доступ. Яндекс покажет авторизационный токен — скопируйте его. Это и есть значение `YANDEX_WEBMASTER_TOKEN` (не ClientID).
+7. Сохраните токен в окружении MCP. Не публикуйте его и не добавляйте настоящий токен в Git. По документации токен действует 6 месяцев; для получения нового откройте ссылку авторизации повторно.
+
+Подробности — в [официальной инструкции Яндекса](https://yandex.ru/dev/webmaster/doc/ru/tasks/how-to-get-oauth.md).
+
+ID пользователя сервер получает автоматически; при необходимости его можно задать через `YANDEX_WEBMASTER_USER_ID`.
+
+После сборки сервер запускается командой `npm run start:webmaster`. Пример настройки в `.mcp.json`:
+
+```json
+"yandex-webmaster": {
+  "command": "node",
+  "args": ["dist/webmaster-index.js"],
+  "env": {
+    "YANDEX_WEBMASTER_TOKEN": "...",
+    "YANDEX_FOLDER_ID": "...",
+    "YANDEX_API_TOKEN": "..."
+  }
+}
+```
+
+Для инструментов сайта сначала вызовите список сайтов и передайте `host_id` в формате ответа.
+
 ## Установка
 
 ```bash
